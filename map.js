@@ -52,7 +52,7 @@ function addStations(year) {
         .attr("cx", d => projection([+d.longitude, +d.latitude])[0])
         .attr("cy", d => projection([+d.longitude, +d.latitude])[1])
         .attr("r", 1)
-        .attr("fill", "black");
+        .attr("fill", "grey");
 };
 
 // trip paths
@@ -90,18 +90,24 @@ function processTripGeoJSON(files) {
 processTripGeoJSON(tripFiles);
 
 // add trips
+let tripStack = []
 function addTrips(year) {
-    //svg.selectAll(".trips").remove();
-    svg.selectAll(".trips")
+    
+    svg.selectAll(".trips.year" + year)
         .data(tripPaths[year].features)
         .enter()
         .append("path")
-        .attr("class", ".trips")
+        .attr("class", `trips year${year}`)
         .attr("d", pathGenerator)
         .attr("fill", "none")
         .attr("stroke", d => colorScale(year))
         .attr("stroke-width", 2)
         .attr("stroke-opacity", 0.5);
+    tripStack.push(year);
+}
+
+function removeTrips(year) {
+    svg.selectAll(`.trips.year${year}`).remove();
 }
 
 // scrolling logic
@@ -127,8 +133,14 @@ var update = function(index) {
     var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
     var scrolled = d3.range(lastIndex + sign, activeIndex + sign, sign);
     scrolled.forEach(function (i) {
-        addStations(years[i]);
-        addTrips(years[i]);
+        if (sign === 1) {
+            addStations(years[i]);
+            addTrips(years[i]);
+        } else {
+            addStations(years[i]);
+            removeTrips(tripStack.pop());
+        }
+        
     });
     lastIndex = activeIndex; 
 };
