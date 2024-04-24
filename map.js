@@ -1,9 +1,8 @@
-
 // Width and height for the SVG
 const width = 960, height = 960;
 
 const projection = d3.geoMercator()
-    .center([-73.93, 40.80]) 
+    .center([-73.93, 40.74]) 
     .scale(148000)
     .translate([width / 2, height / 2]);
 
@@ -28,27 +27,22 @@ d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
 // drawing stations
 let curr_year = 2013;
 let stations = [];
-
+let years = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 d3.csv("data/stations_by_year.csv").then(data => {
     stations = data;
     addStations(curr_year);
 });
 
 function addStations(year) {
+    svg.selectAll("circle").remove();
     const filterYear = stations.filter(d => +d.year === year);
     const circles = svg.selectAll(`circle.year${year}`).data(filterYear);
 
-    // Exit old elements not present in new data
-    //circles.exit().remove();
-
-    // Enter new elements present in the new data
     circles
         .enter()
         .append("circle")
         .merge(circles) // Enter + Update existing circles
         .attr("class", `year${year}`)
-        .transition()
-        .duration(2)
         .attr("cx", d => projection([+d.longitude, +d.latitude])[0])
         .attr("cy", d => projection([+d.longitude, +d.latitude])[1])
         .attr("r", 1)
@@ -64,52 +58,23 @@ scroll.on('active', function(index) {
     update(index);
 });
 
-var update = function(index) {
-    switch(index) {
-        case 1:
-            curr_year = 2014;
-            break;
-        case 2:
-            curr_year = 2015;
-            break;
-        case 3:
-            curr_year = 2016;
-            break;
-        case 4:
-            curr_year = 2017;
-            break;
-        case 5:
-            curr_year = 2018;
-            break;
-        case 6:
-            curr_year = 2019;
-            break; 
-        case 7:
-            curr_year = 2020;
-            break;
-        case 8:
-            curr_year = 2021;
-            break;
-        case 9:
-            curr_year = 2022;
-            break;
-        case 10:
-            curr_year = 2023;
-            break;
-        case 11:
-            curr_year = 2024;
-            break;                       
-      default:
-        curr_year = 2013;
-        break;
-    }
-    addStations(curr_year);
-};
-
 /*
-* Credit to Jim Vallandingham
+* Credit to Jim Vallandingham for everything below
 * https://github.com/vlandham/scroll_demo
 */
+
+var lastIndex = -1;
+var activeIndex = 0;
+
+var update = function(index) {
+    activeIndex = index;
+    var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
+    var scrolled = d3.range(lastIndex + sign, activeIndex + sign, sign);
+    scrolled.forEach(function (i) {
+        addStations(years[i]);
+    });
+    lastIndex = activeIndex; 
+};
 
 /**
  * scroller - handles the details of figuring out which section
