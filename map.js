@@ -19,10 +19,11 @@ const svg = d3.select("svg")
 
 // NYC geojson
 d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
-    svg.selectAll("path")
+    svg.selectAll(".nyc")
         .data(geojson.features)
         .enter()
         .append("path")
+        .attr("class", ".nyc")
         .attr("d", pathGenerator)
         .attr("fill", "none")
         .attr("stroke", "black")
@@ -91,16 +92,15 @@ processTripGeoJSON(tripFiles);
 // add trips
 function addTrips(year) {
     //svg.selectAll(".trips").remove();
-    
     svg.selectAll(".trips")
         .data(tripPaths[year].features)
         .enter()
         .append("path")
-        .attr("class", "trips")
+        .attr("class", ".trips")
         .attr("d", pathGenerator)
         .attr("fill", "none")
         .attr("stroke", d => colorScale(year))
-        .attr("stroke-width", 1)
+        .attr("stroke-width", 2)
         .attr("stroke-opacity", 0.5);
 }
 
