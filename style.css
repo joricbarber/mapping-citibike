@@ -5,11 +5,11 @@
     top: 0px;
     z-index: 90;
 }
-  
+
 .step {
     margin-bottom: 200px;
 }
-  
+
 #vis {
     display: inline-block;
     position: fixed;
@@ -23,4 +23,4 @@
 
 #extra-space {
     height: 300px;
-  }
+}
