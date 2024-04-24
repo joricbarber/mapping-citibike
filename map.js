@@ -1,5 +1,6 @@
 // Width and height for the SVG
 const width = 960, height = 960;
+let years = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
 
 const projection = d3.geoMercator()
     .center([-73.93, 40.74]) 
@@ -8,11 +9,15 @@ const projection = d3.geoMercator()
 
 const pathGenerator = d3.geoPath().projection(projection);
 
+const colorScale = d3.scaleOrdinal()
+    .domain(years)
+    .range(d3.schemeTableau10);
+
 const svg = d3.select("svg")
     .attr("width", width)
     .attr("height", height);
 
-// display NYC geojson
+// NYC geojson
 d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
     svg.selectAll("path")
         .data(geojson.features)
@@ -24,31 +29,82 @@ d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
         .attr("stroke-width", "0.5");
 });
 
-// drawing stations
+// Citbike Stations
 let curr_year = 2013;
 let stations = [];
-let years = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 d3.csv("data/stations_by_year.csv").then(data => {
     stations = data;
     addStations(curr_year);
 });
 
+// add stations to map
 function addStations(year) {
     svg.selectAll("circle").remove();
     const filterYear = stations.filter(d => +d.year === year);
     const circles = svg.selectAll(`circle.year${year}`).data(filterYear);
-
+    
     circles
         .enter()
         .append("circle")
-        .merge(circles) // Enter + Update existing circles
+        .merge(circles)
         .attr("class", `year${year}`)
         .attr("cx", d => projection([+d.longitude, +d.latitude])[0])
         .attr("cy", d => projection([+d.longitude, +d.latitude])[1])
         .attr("r", 1)
         .attr("fill", "black");
+};
+
+// trip paths
+const tripFiles = [
+    { year: 2013, path: "data/route_2013.geojson"},
+    { year: 2014, path: "data/route_2014.geojson"},
+    { year: 2015, path: "data/route_2015.geojson"},
+    { year: 2016, path: "data/route_2016.geojson"},
+    { year: 2017, path: "data/route_2017.geojson"},
+    { year: 2018, path: "data/route_2018.geojson"},
+    { year: 2019, path: "data/route_2019.geojson"},
+    { year: 2020, path: "data/route_2020.geojson"},
+    { year: 2021, path: "data/route_2021.geojson"},
+    { year: 2022, path: "data/route_2022.geojson"},
+    { year: 2023, path: "data/route_2023.geojson"},
+    { year: 2024, path: "data/route_2024.geojson"}
+];
+
+tripPaths = {};
+
+function processTripGeoJSON(files) {
+  
+    files.forEach(file => {
+        d3.json(file.path).then(data => {
+            yearTrips = data.flatMap(d => d.features);
+            geoData = { type: "FeatureCollection", features: yearTrips};
+            tripPaths[file.year] = geoData;
+
+            if (Object.keys(tripPaths).length === files.length){
+                addTrips(curr_year);
+            }
+        });
+    });
+}
+processTripGeoJSON(tripFiles);
+
+// add trips
+function addTrips(year) {
+    //svg.selectAll(".trips").remove();
+    
+    svg.selectAll(".trips")
+        .data(tripPaths[year].features)
+        .enter()
+        .append("path")
+        .attr("class", "trips")
+        .attr("d", pathGenerator)
+        .attr("fill", "none")
+        .attr("stroke", d => colorScale(year))
+        .attr("stroke-width", 1)
+        .attr("stroke-opacity", 0.5);
 }
 
+// scrolling logic
 var scroll = scroller()
     .container(d3.select('#graphic'));
 
@@ -72,6 +128,7 @@ var update = function(index) {
     var scrolled = d3.range(lastIndex + sign, activeIndex + sign, sign);
     scrolled.forEach(function (i) {
         addStations(years[i]);
+        addTrips(years[i]);
     });
     lastIndex = activeIndex; 
 };
