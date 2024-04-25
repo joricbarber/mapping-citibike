@@ -29,7 +29,8 @@ d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
         .attr("d", pathGenerator)
         .attr("fill", "#F4E8C1")
         .attr("stroke", "#A0C1B9")
-        .attr("stroke-width", "0.5");
+        .attr("stroke-width", "0.5")
+        .lower();
 });
 
 // Citbike Stations
@@ -94,7 +95,7 @@ let tripStack = []
 
 function addTrips(year) {
 
-    svg.selectAll(".trips.year" + year)
+    const trips = svg.selectAll(".trips.year" + year)
         .data(tripPaths[year].features)
         .enter()
         .append("path")
@@ -104,16 +105,22 @@ function addTrips(year) {
         .attr("stroke", d => colorScale(year))
         .attr("stroke-width", 2)
         .attr("stroke-opacity", 0.5);
+
+    trips.each(function() {
+        const length = this.getTotalLength();
+        d3.select(this)
+            .attr("stroke-dasharray", length + " " + length)
+            .attr("stroke-dashoffset", length)
+            .transition()  
+            .duration(500) 
+            .ease(d3.easeLinear)
+            .attr("stroke-dashoffset", 0);
+    });
     tripStack.push(year);
 }
 
 function removeTrips(year) {
     svg.selectAll(`.trips.year${year}`).remove();
-}
-
-function redrawBoroughBoundaries() {
-    const boroughPaths = svg.selectAll(".nyc").remove();
-    svg.insert(() => boroughPaths.node(), ":first-child");
 }
 
 // scrolling logic
