@@ -64,7 +64,7 @@ function addStations(year) {
         .transition()
         .delay((d, i) => Math.random() * 500)
         .duration(500)
-        .attr("r", 1.25);
+        .attr("r", 1.05);
 };
 
 // trip paths
