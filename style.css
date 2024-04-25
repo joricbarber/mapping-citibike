@@ -5,13 +5,25 @@ body {
 #sections {
     position: relative;
     display: inline-block;
-    width: 250px;
+    width: 400px;
     top: 0px;
     z-index: 90;
+    margin-left: 50px;
+    margin-right: 50px;
+    font-family: sans-serif;
 }
 
 .step {
     margin-bottom: 200px;
+}
+
+.first {
+    margin-bottom: 200px;
+}
+
+.header {
+    font-size: large;
+    text-decoration: underline;
 }
 
 #vis {

@@ -4,8 +4,8 @@ const width = 960,
 let years = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
 
 const projection = d3.geoMercator()
-    .center([-73.93, 40.76])
-    .scale(165000)
+    .center([-73.93, 40.75])
+    .scale(168000)
     .translate([width / 2, height / 2]);
 
 const pathGenerator = d3.geoPath().projection(projection);
@@ -43,7 +43,12 @@ d3.csv("data/stations_by_year.csv").then(data => {
 
 // add stations to map
 function addStations(year) {
-    svg.selectAll("circle").remove();
+    svg.selectAll("circle")
+        .transition()
+        .duration(1000)
+        .attr("r", 0)
+        .remove();
+
     const filterYear = stations.filter(d => +d.year === year);
     const circles = svg.selectAll(`circle.year${year}`).data(filterYear);
 
@@ -54,8 +59,12 @@ function addStations(year) {
         .attr("class", `year${year}`)
         .attr("cx", d => projection([+d.longitude, +d.latitude])[0])
         .attr("cy", d => projection([+d.longitude, +d.latitude])[1])
-        .attr("r", 1)
-        .attr("fill", "grey");
+        .attr("r", 0)
+        .attr("fill", "grey")
+        .transition()
+        .delay((d, i) => Math.random() * 500)
+        .duration(500)
+        .attr("r", 1.25);
 };
 
 // trip paths
@@ -77,14 +86,11 @@ const tripFiles = [
 tripPaths = {};
 
 function processTripGeoJSON(files) {
-
     files.forEach(file => {
         d3.json(file.path).then(data => {
             yearTrips = data.flatMap(d => d.features);
             geoData = { type: "FeatureCollection", features: yearTrips };
             tripPaths[file.year] = geoData;
-
-            
         });
     });
 }
@@ -92,9 +98,7 @@ processTripGeoJSON(tripFiles);
 
 // add trips
 let tripStack = []
-
 function addTrips(year) {
-
     const trips = svg.selectAll(".trips.year" + year)
         .data(tripPaths[year].features)
         .enter()
@@ -104,7 +108,7 @@ function addTrips(year) {
         .attr("fill", "none")
         .attr("stroke", d => colorScale(year))
         .attr("stroke-width", 2)
-        .attr("stroke-opacity", 0.5);
+        .attr("stroke-opacity", 0.6);
 
     trips.each(function() {
         const length = this.getTotalLength();
@@ -120,7 +124,19 @@ function addTrips(year) {
 }
 
 function removeTrips(year) {
-    svg.selectAll(`.trips.year${year}`).remove();
+    const trips = svg.selectAll(`.trips.year${year}`);
+
+    trips.each(function() {
+        const length = this.getTotalLength();
+        d3.select(this)
+            .transition()
+            .duration(500)
+            .ease(d3.easeLinear)  
+            .attr("stroke-dashoffset", length)  
+            .on("end", function() {  
+                d3.select(this).remove();
+            });
+    });
 }
 
 // scrolling logic
