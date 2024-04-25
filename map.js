@@ -4,8 +4,8 @@ const width = 960,
 let years = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
 
 const projection = d3.geoMercator()
-    .center([-73.93, 40.74])
-    .scale(148000)
+    .center([-73.93, 40.76])
+    .scale(165000)
     .translate([width / 2, height / 2]);
 
 const pathGenerator = d3.geoPath().projection(projection);
@@ -16,7 +16,8 @@ const colorScale = d3.scaleOrdinal()
 
 const svg = d3.select("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .style("background-color", "A0C1B9");
 
 // NYC geojson
 d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
@@ -26,8 +27,8 @@ d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
         .append("path")
         .attr("class", ".nyc")
         .attr("d", pathGenerator)
-        .attr("fill", "none")
-        .attr("stroke", "black")
+        .attr("fill", "#F4E8C1")
+        .attr("stroke", "#A0C1B9")
         .attr("stroke-width", "0.5");
 });
 
@@ -82,9 +83,7 @@ function processTripGeoJSON(files) {
             geoData = { type: "FeatureCollection", features: yearTrips };
             tripPaths[file.year] = geoData;
 
-            if (Object.keys(tripPaths).length === files.length) {
-                addTrips(curr_year);
-            }
+            
         });
     });
 }
@@ -110,6 +109,11 @@ function addTrips(year) {
 
 function removeTrips(year) {
     svg.selectAll(`.trips.year${year}`).remove();
+}
+
+function redrawBoroughBoundaries() {
+    const boroughPaths = svg.selectAll(".nyc").remove();
+    svg.insert(() => boroughPaths.node(), ":first-child");
 }
 
 // scrolling logic
