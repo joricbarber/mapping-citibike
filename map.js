@@ -13,6 +13,7 @@ const pathGenerator = d3.geoPath().projection(projection);
 const colorScale = d3.scaleOrdinal()
     .domain(years)
     .range(d3.schemeTableau10);
+    //.range(years.map(year => `year-${year}`)); 
 
 const svg = d3.select("svg")
     .attr("width", width)
@@ -104,6 +105,7 @@ function addTrips(year) {
         .enter()
         .append("path")
         .attr("class", `trips year${year}`)
+        //.attr("class", d => colorScale(d.year))
         .attr("d", pathGenerator)
         .attr("fill", "none")
         .attr("stroke", d => colorScale(year))
@@ -157,21 +159,46 @@ scroll.on('active', function(index) {
 var lastIndex = -1;
 var activeIndex = 0;
 
-var update = function(index) {
+var update = function(index) {    
     activeIndex = index;
-    var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
-    var scrolled = d3.range(lastIndex + sign, activeIndex + sign, sign);
-    scrolled.forEach(function(i) {
-        if (sign === 1) {
-            addStations(years[i]);
-            addTrips(years[i]);
-        } else {
-            addStations(years[i]);
-            removeTrips(tripStack.pop());
-        }
+    
+      // Remove opacity transition for smoother scrolling
+      d3.selectAll(".step").style("transition", "none");
+    
+      // Set opacity to 1 for all sections (show all)
+      d3.selectAll(".step").style("opacity", 1);
+    
+      // (Optional) Add a class to highlight the active section
+      d3.selectAll(".step").classed("active", false);
+      d3.select(".step:nth-child(" + (activeIndex + 1) + ")").classed("active", true);
+ /*   
+      // Update stations and trip paths based on year (existing logic)
+      const year = years[index];
+      addStations(year);
+    
+      // Clear existing trip paths
+      //svg.selectAll(".trips").remove();
+      //tripStack = []; // Reset trip stack
+    
+      // Check if trip data exists for the year
+      if (tripPaths[year]) {
+        addTrips(year);
+      }
+*/
+      var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
+      var scrolled = d3.range(lastIndex + sign, activeIndex + sign, sign);
+      scrolled.forEach(function(i) {
+          if (sign === 1) {
+              addStations(years[i]);
+              addTrips(years[i]);
+          } else {
+              addStations(years[i]);
+              removeTrips(tripStack.pop());
+          }
+  
+      });
 
-    });
-    lastIndex = activeIndex;
+      lastIndex = activeIndex;
 };
 
 /**
@@ -215,7 +242,7 @@ function scroller() {
             position();
             timer.stop();
         });
-    }
+    }  
 
     /**
      * resize - called initially and also when page is resized. Resets the sectionPositions
