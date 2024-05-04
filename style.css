@@ -5,7 +5,7 @@ body {
     font-family: 'Cormorant Garamond', serif;
 }
 
-#sections {
+#sections, .title {
     font-size: 150%;
     position: relative;
     display: inline-block;
@@ -22,7 +22,7 @@ body {
 
 h1 {
 	font-size: 350%;
-    color: 331e38;
+    color: #331e38;
     font-family: sans-serif;
 }
 

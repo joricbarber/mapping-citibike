@@ -3,9 +3,23 @@ const width = 960,
     height = 960;
 let years = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
 
+const zooms = [
+    { center: [-73.97, 40.72], zoom: 390000},
+    { center: [-73.97, 40.72], zoom: 390000},
+    { center: [-73.97, 40.727], zoom: 330000},
+    { center: [-73.97, 40.727], zoom: 270000},
+    { center: [-73.97, 40.727], zoom: 240000},
+    { center: [-73.97, 40.727], zoom: 240000},
+    { center: [-73.97, 40.727], zoom: 240000},
+    { center: [-73.97, 40.733], zoom: 230000},
+    { center: [-73.93, 40.75], zoom: 168000},
+    { center: [-73.93, 40.75], zoom: 168000},
+    { center: [-73.93, 40.75], zoom: 168000},
+    { center: [-73.93, 40.75], zoom: 168000}
+]
 const projection = d3.geoMercator()
-    .center([-73.93, 40.75])
-    .scale(168000)
+    .center([-73.97, 40.727])
+    .scale(240000)
     .translate([width / 2, height / 2]);
 
 const pathGenerator = d3.geoPath().projection(projection);
@@ -117,7 +131,8 @@ function addTrips(year) {
         d3.select(this)
             .attr("stroke-dasharray", length + " " + length)
             .attr("stroke-dashoffset", length)
-            .transition()  
+            .transition()
+            .delay(400)  
             .duration(500) 
             .ease(d3.easeLinear)
             .attr("stroke-dashoffset", 0);
@@ -132,6 +147,7 @@ function removeTrips(year) {
         const length = this.getTotalLength();
         d3.select(this)
             .transition()
+            .delay(400)
             .duration(500)
             .ease(d3.easeLinear)  
             .attr("stroke-dashoffset", length)  
@@ -140,7 +156,26 @@ function removeTrips(year) {
             });
     });
 }
+// update map zooming
+function zoomMap(idx) {
+    const loc = zooms[idx];
 
+    projection
+        .center(loc.center)
+        .scale(loc.zoom)
+        .translate([width / 2, height / 2]);
+
+    svg.selectAll('path')
+        .transition()
+        .duration(400)
+        .attr('d', pathGenerator);
+
+    svg.selectAll('circle')
+        .transition()
+        .duration(400)
+        .attr('cx', d=> projection([+d.longitude, +d.latitude])[0])
+        .attr('cy', d=> projection([+d.longitude, +d.latitude])[1])
+}
 // scrolling logic
 var scroll = scroller()
     .container(d3.select('#graphic'));
@@ -188,14 +223,15 @@ var update = function(index) {
       var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
       var scrolled = d3.range(lastIndex + sign, activeIndex + sign, sign);
       scrolled.forEach(function(i) {
-          if (sign === 1) {
-              addStations(years[i]);
-              addTrips(years[i]);
-          } else {
-              addStations(years[i]);
-              removeTrips(tripStack.pop());
-          }
-  
+        zoomMap(activeIndex)
+        if (sign === 1) {
+            addStations(years[i]);
+            addTrips(years[i]);
+        } else {
+            addStations(years[i]);
+            removeTrips(tripStack.pop());
+        }
+
       });
 
       lastIndex = activeIndex;
