@@ -1,9 +1,12 @@
+
+
 body {
     background-color: #F4E8C1;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Cormorant Garamond', serif;
 }
 
 #sections {
+    font-size: 150%;
     position: relative;
     display: inline-block;
     width: 400px;
@@ -14,11 +17,18 @@ body {
     font-family: sans-serif;
     overflow: hidden;
     position: relative;
+    font-weight: bold;
+}
+
+h1 {
+	font-size: 350%;
+    color: 331e38;
+    font-family: sans-serif;
 }
 
 .step {
     margin-bottom: 200px;
-    font-size: larger;
+    font-size: 100%;
     top: 0;
     left: 0;
     width: 100%;
@@ -35,8 +45,8 @@ body {
 }
 
 .header {
-    font-size: large;
-    text-decoration: underline;
+    font-size: 200%;
+
 }
 
 #vis {
@@ -49,6 +59,30 @@ body {
     width: 600px;
     background-color: none;
 }
+
+.faded {
+	opacity: 0.4;
+    color: black;
+    font-weight: normal;
+}
+
+.strong {
+    opacity: 1;
+    color: black;
+	font-weight: bold;
+}
+
+.authors {
+    font-size: 100%;
+    text-transform: uppercase;
+}
+
+.date {
+    font-size: 100%;
+    opacity: 0.4;
+    text-transform: uppercase;
+}
+
 /*
 #extra-space {
     height: 300px;
