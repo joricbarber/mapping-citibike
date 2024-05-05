@@ -74,12 +74,11 @@ function addStations(year) {
         .attr("class", `year${year}`)
         .attr("cx", d => projection([+d.longitude, +d.latitude])[0])
         .attr("cy", d => projection([+d.longitude, +d.latitude])[1])
-        .attr("r", 0)
         .attr("fill", "grey")
         .transition()
         .delay((d, i) => Math.random() * 500)
         .duration(500)
-        .attr("r", 1.05);
+        .attr("r", 1.25);
 };
 
 // trip paths
@@ -132,7 +131,6 @@ function addTrips(year) {
             .attr("stroke-dasharray", length + " " + length)
             .attr("stroke-dashoffset", length)
             .transition()
-            .delay(400)  
             .duration(500) 
             .ease(d3.easeLinear)
             .attr("stroke-dashoffset", 0);
@@ -147,7 +145,6 @@ function removeTrips(year) {
         const length = this.getTotalLength();
         d3.select(this)
             .transition()
-            .delay(400)
             .duration(500)
             .ease(d3.easeLinear)  
             .attr("stroke-dashoffset", length)  
@@ -166,13 +163,9 @@ function zoomMap(idx) {
         .translate([width / 2, height / 2]);
 
     svg.selectAll('path')
-        .transition()
-        .duration(400)
         .attr('d', pathGenerator);
 
     svg.selectAll('circle')
-        .transition()
-        .duration(400)
         .attr('cx', d=> projection([+d.longitude, +d.latitude])[0])
         .attr('cy', d=> projection([+d.longitude, +d.latitude])[1])
 }
@@ -223,7 +216,7 @@ var update = function(index) {
       var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
       var scrolled = d3.range(lastIndex + sign, activeIndex + sign, sign);
       scrolled.forEach(function(i) {
-        zoomMap(activeIndex)
+        zoomMap(i)
         if (sign === 1) {
             addStations(years[i]);
             addTrips(years[i]);
