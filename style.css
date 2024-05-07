@@ -50,6 +50,10 @@ h1 {
     margin-bottom: 3vw;
 }
 
+.space {
+    margin-bottom: 400px;
+}
+
 #vis {
     display: inline-block;
     position: fixed;
