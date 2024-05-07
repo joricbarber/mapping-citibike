@@ -1,29 +1,28 @@
-
-
 body {
     background-color: #F4E8C1;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Helvetica'
 }
 
-#sections, .title {
-    font-size: 150%;
+#sections,
+.title {
+    font-size: 1.5vw;
     position: relative;
     display: inline-block;
-    width: 400px;
+    width: 450px;
     top: 0px;
     z-index: 90;
     margin-left: 50px;
     margin-right: 50px;
-    font-family: sans-serif;
+    font-family: 'Helvetica';
     overflow: hidden;
     position: relative;
     font-weight: bold;
 }
 
 h1 {
-	font-size: 350%;
+    font-size: 5.5vw;
     color: #331e38;
-    font-family: sans-serif;
+    font-family: 'Helvetica';
 }
 
 .step {
@@ -32,12 +31,14 @@ h1 {
     top: 0;
     left: 0;
     width: 100%;
-    opacity: 0; /* Initially hide all sections */
+    opacity: 0;
+    /* Initially hide all sections */
     transition: opacity 1s ease-in-out;
 }
 
 .step.active {
-    opacity: 1; /* Show the active section */
+    opacity: 1;
+    /* Show the active section */
 }
 
 .first {
@@ -45,8 +46,12 @@ h1 {
 }
 
 .header {
-    font-size: 200%;
+    font-size: 4.2vw;
+    margin-bottom: 3vw;
+}
 
+.space {
+    margin-bottom: 400px;
 }
 
 #vis {
@@ -61,7 +66,7 @@ h1 {
 }
 
 .faded {
-	opacity: 0.4;
+    opacity: 0.4;
     color: black;
     font-weight: normal;
 }
@@ -69,7 +74,7 @@ h1 {
 .strong {
     opacity: 1;
     color: black;
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .authors {
@@ -83,21 +88,57 @@ h1 {
     text-transform: uppercase;
 }
 
+
 /*
 #extra-space {
     height: 300px;
 }
 */
 
-.year-2013 { color: #042498; }
-.year-2014 { color: #e5960d; }
-.year-2015 { color: #ce0404; }
-.year-2016 { color: #39a2d3; }
-.year-2017 { color: #0d7428; }
-.year-2018 { color: #757710; }
-.year-2019 { color: #49038a; }
-.year-2020 { color: #eb23cd; }
-.year-2021 { color: #72530e; }
-.year-2022 { color: #7e8291; }
-.year-2023 { color: #0a38e0; }
-.year-2024 { color: #f37d08; }
+.year-2013 {
+    color: #042498;
+}
+
+.year-2014 {
+    color: #e5960d;
+}
+
+.year-2015 {
+    color: #ce0404;
+}
+
+.year-2016 {
+    color: #39a2d3;
+}
+
+.year-2017 {
+    color: #0d7428;
+}
+
+.year-2018 {
+    color: #757710;
+}
+
+.year-2019 {
+    color: #49038a;
+}
+
+.year-2020 {
+    color: #eb23cd;
+}
+
+.year-2021 {
+    color: #72530e;
+}
+
+.year-2022 {
+    color: #7e8291;
+}
+
+.year-2023 {
+    color: #0a38e0;
+}
+
+.year-2024 {
+    color: #f37d08;
+}
