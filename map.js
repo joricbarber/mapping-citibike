@@ -32,7 +32,7 @@ const colorScale = d3.scaleOrdinal()
 const svg = d3.select("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background-color", "A0C1B9");
+    .style("background-color", "131616");
 
 // NYC geojson
 d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
@@ -42,8 +42,8 @@ d3.json("data/Borough Boundaries.geojson").then(function(geojson) {
         .append("path")
         .attr("class", ".nyc")
         .attr("d", pathGenerator)
-        .attr("fill", "#F4E8C1")
-        .attr("stroke", "#A0C1B9")
+        .attr("fill", "#1C2121")
+        .attr("stroke", "#131616")
         .attr("stroke-width", "0.5")
         .lower();
 });
